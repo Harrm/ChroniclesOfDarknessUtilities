@@ -1,0 +1,6 @@
+[package]
+name = "WoD_Simulation"
+version = "0.1.0"
+authors = ["Harrm <harrm@mail.ru>"]
+
+[dependencies]
