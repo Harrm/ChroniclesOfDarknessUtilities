@@ -1,10 +1,9 @@
 use super::attribute::Attribute;
 use super::health;
-pub use health::DamageType;
-
+use super::advantages_factories::AdvantagesFactories;
 use std::collections::HashMap;
 
-pub type AdvantagesFactories = HashMap<String, &'static Fn(&Creature) -> i32>;
+pub use super::health::DamageType;
 
 
 
@@ -13,7 +12,8 @@ pub struct Creature<'a> {
     skills: HashMap<String, i32>,
     advantages: HashMap<String, i32>,
     advantagesFactories: &'a AdvantagesFactories,
-    health: health::Health
+    health: health::Health,
+    size: u8
 }
 
 
@@ -34,7 +34,8 @@ impl<'a> Creature<'a> {
         let mut this = Creature {attributes: attributes, skills: skills, 
                                  advantages: advantages, 
                                  advantagesFactories: advantagesFactories,
-                                 health: health::Health::new(1)};
+                                 health: health::Health::new(1),
+                                 size: 5};
 
         for (name, factoryMethod) in advantagesFactories {
             let val = factoryMethod(&this);
@@ -45,56 +46,43 @@ impl<'a> Creature<'a> {
     }
 
 
+
     pub fn damage(&mut self, damage: u16, type_: DamageType) {
         self.health.damage(damage, type_);
     }
 
-    pub fn setAttribute(&mut self, name: &str, value: i32) {
+
+
+    pub fn setAttribute(&mut self, name: &str, value: u8) {
         if let Some(attribute) = self.attributes.get_mut(name) {
             attribute.setValue(value);
         
         } else {
             return
         }
-
-        for i in self.attributes.get(name).unwrap().getDependAdvantages() {
-            let val = self.advantagesFactories.get(i).unwrap()(&self);
-            self.advantages.get_mut(i).map(|v| { *v = val });
-        }
     }
 
 
 
-    pub fn addDependAdvantage(&mut self, advantageName: &str, 
-                                         attributeName: &str) {
-        if let Some(attribute) = self.attributes.get_mut(attributeName) {
-            attribute.addDependAdvantage(advantageName);
-        }
-    }
-
-
-
-    pub fn getAttribute(&self, name: &str) -> Option<&Attribute> {
-        self.attributes.get(name)
+    pub fn getAttribute(&self, name: &str) -> Option<u8> {
+        self.attributes.get(name).map(|v| v.getValue())
     }
 
 
 
     pub fn getAdvantage(&self, name: &str) -> Option<i32> {
-        self.advantages.get(name).map(|v| *v )
+        self.advantagesFactories.get(name).map(|f| f(&self) )
     }
-}
 
 
 
-const healthFactory: &'static Fn(&Creature)->i32 = &|character| {
-    character.getAttribute("Strength").unwrap().getValue()+3
-};
+    pub fn getSize(&self) -> u8 {
+        self.size
+    }
 
 
 
-pub fn initAdvantagesFactories() -> AdvantagesFactories {
-    let mut factories = AdvantagesFactories::new();
-    factories.insert("Health".to_string(), healthFactory);
-    factories
+    pub fn setSize(&mut self, size: u8) {
+        self.size = size;
+    }
 }

@@ -1,16 +1,8 @@
 #[allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]
-mod command_parsing;
+pub mod creature;
 #[allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]
-mod scene;
+mod attribute;
 #[allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]
-mod creature;
-mod simulation;
-extern crate rustc_serialize;
-extern crate rand;
-
-
-
-fn main() {
-    println!("Hello, world!");
-    simulation::Simulation::new().start();
-}
+mod health;
+#[allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]
+mod advantages_factories;

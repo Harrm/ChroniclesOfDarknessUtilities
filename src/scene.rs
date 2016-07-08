@@ -1,17 +1,17 @@
 use super::creature::Creature;
 
-pub struct Scene<'a> {
-    creatures: Vec<Creature<'a>>
+pub struct Scene {
+    creatures: Vec<Creature>
 }
 
 
 
-impl<'a> Scene<'a> {
-    pub fn new() -> Scene<'a> {
+impl Scene {
+    pub fn new() -> Scene {
         Scene { creatures: Vec::new() }
     }
 
-    pub fn addCreature(&mut self, creature: Creature<'a>) {
+    pub fn addCreature(&mut self, creature: Creature) {
         self.creatures.push(creature);
     }
 
@@ -19,7 +19,7 @@ impl<'a> Scene<'a> {
         &self.creatures[index]
     }
 
-    pub fn getMutCreature(&mut self, index: usize) -> &'a mut Creature {
+    pub fn getMutCreature(&mut self, index: usize) -> &mut Creature {
         &mut self.creatures[index]
     }
 
