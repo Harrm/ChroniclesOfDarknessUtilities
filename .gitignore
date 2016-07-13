@@ -1,4 +1,7 @@
 /target/
 /deprecated/
+/data/
+/layouts/#*
+/layouts/*~
 
 Cargo.lock
